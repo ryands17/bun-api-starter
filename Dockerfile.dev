@@ -1,0 +1,17 @@
+FROM oven/bun:1
+
+# node_modules installation directory
+WORKDIR /cache
+
+# install and cache dependencies
+COPY package.json .
+RUN --mount=type=cache,id=bun-dev,target=~/.bun/install/cache bun install
+
+# set working directory add `/app/node_modules/.bin` to $PATH
+WORKDIR /app
+ENV PATH="/app/node_modules/.bin:$PATH"
+
+# copy source code
+COPY . .
+
+EXPOSE 3000

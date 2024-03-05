@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    restart: unless-stopped
+    volumes:
+      - ./node_modules:/app/node_modules
+      - type: bind
+        source: ${PWD}/bun.lockb
+        target: /app/bun.lockb
+    develop:
+      watch:
+        - action: sync
+          path: ./src
+          target: /app/src
+        - action: rebuild
+          path: package.json
+        - action: sync+restart
+          path: tsconfig.json
+    ports:
+      - 3000:3000
+    command: >
+      bash -c "cp -rfu /cache/node_modules/. /app/node_modules/ &&
+      cp /cache/bun.lockb /app/bun.lockb && 
+      bun dev"

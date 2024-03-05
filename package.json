@@ -1,0 +1,18 @@
+{
+  "scripts": {
+    "dev": "bun run --hot src/index.ts",
+    "test": "bun test --watch",
+    "test:ci": "bun test"
+  },
+  "dependencies": {
+    "hono": "^4.0.9"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/node": "^20.11.24",
+    "prettier": "^3.2.5"
+  },
+  "prettier": {
+    "singleQuote": true
+  }
+}

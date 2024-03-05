@@ -8,8 +8,8 @@ ENV PATH="/app/node_modules/.bin:$PATH"
 COPY package.json bun.lockb ./
 RUN --mount=type=cache,id=bun-prod,target=~/.bun/install/cache bun install --frozen-lockfile
 
-# lint and test
-RUN bun test:ci
+# run tests
+RUN bun run test:ci
 
 FROM base as release
 

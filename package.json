@@ -3,7 +3,6 @@
     "dev": "bun run --hot src/index.ts",
     "test": "bun test --watch",
     "test:ci": "bun test",
-    "lint": "bun tsc --noEmit",
     "start": "bun run src/index.ts"
   },
   "dependencies": {

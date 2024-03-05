@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    restart: on-failure:3
+    healthcheck:
+      test: curl -f http://localhost:3000 || exit 1
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    deploy:
+      replicas: 3
+  proxy:
+    build:
+      context: ./proxy
+      dockerfile: Dockerfile.proxy
+    depends_on:
+      api:
+        condition: service_healthy
+        restart: true
+    ports:
+      - 8080:80
+    restart: unless-stopped

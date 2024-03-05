@@ -26,6 +26,12 @@ To stop the container
 docker compose down
 ```
 
+To check the health of a container. Installing `jq` is recommended
+
+```
+docker inspect <container name> | jq '.[].State.Health'
+```
+
 ## Enhancements
 
 - [ ] Add an SQLite database with an ORM in front for a full dev experience

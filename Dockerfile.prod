@@ -1,0 +1,32 @@
+FROM oven/bun:1 as base
+
+# set working directory add `/app/node_modules/.bin` to $PATH
+WORKDIR /app
+ENV PATH="/app/node_modules/.bin:$PATH"
+
+# install and cache dependencies
+COPY package.json bun.lockb ./
+RUN --mount=type=cache,id=bun-prod,target=~/.bun/install/cache bun install --frozen-lockfile
+
+# lint and test
+RUN bun test:ci
+
+FROM base as release
+
+# install production dependencies
+COPY package.json bun.lockb ./
+RUN --mount=type=cache,id=bun-prod,target=~/.bun/install/cache \
+  bun install --production --frozen-lockfile
+
+# install curl for healthchecks
+RUN --mount=target=/var/lib/apt/lists,type=cache,sharing=locked \
+  --mount=target=/var/cache/apt,type=cache,sharing=locked \
+  rm -f /etc/apt/apt.conf.d/docker-clean \
+  && apt-get -y update && \
+  apt-get -y install curl
+
+COPY . .
+
+EXPOSE 3000
+
+CMD [ "bun", "start"]

@@ -23,6 +23,7 @@
     "noPropertyAccessFromIndexSignature": true
   },
   "include": [
-    "src"
+    "src",
+    "drizzle.config.ts"
   ]
 }

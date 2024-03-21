@@ -34,5 +34,6 @@ docker inspect <container name> | jq '.[].State.Health'
 
 ## Enhancements
 
-- [ ] Add an SQLite database with an ORM in front for a full dev experience
+- [x] Add an SQLite database with an ORM in front for a full dev experience
+- [ ] Run with SQLite in production
 - [ ] Replicate the SQLite database in production to an S3 compatible store: [MinIO](https://min.io/docs/minio/container/index.html)

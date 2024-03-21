@@ -1,11 +1,42 @@
 version: '3.8'
 
 services:
+  db:
+    # use a hashed image for consistency
+    image: ghcr.io/tursodatabase/libsql-server:4ecf2a5
+    environment:
+      - SQLD_NODE=primary
+      - SQLD_DB_PATH=/var/lib/sqld/primary.sqld
+    volumes:
+      - db_data:/var/lib/sqld
+    ports:
+      - '8080:8080'
+    expose:
+      - '8080'
+      - '5001'
+  replica1:
+    # use a hashed image for consistency
+    image: ghcr.io/tursodatabase/libsql-server:4ecf2a5
+    environment:
+      - SQLD_NODE=replica
+      - SQLD_PRIMARY_URL=http://db:5001
+      - SQLD_DB_PATH=/var/lib/sqld/replica1.sqld
+    volumes:
+      - db_replica1:/var/lib/sqld
+    depends_on:
+      db:
+        condition: service_started
+        restart: true
+    expose:
+      - '8080'
   api:
     container_name: bun-api
     build:
       context: .
       dockerfile: Dockerfile.dev
+    depends_on:
+      - db
+      - replica1
     restart: unless-stopped
     volumes:
       - ./node_modules:/app/node_modules
@@ -21,9 +52,14 @@ services:
           path: package.json
         - action: sync+restart
           path: tsconfig.json
+        - action: sync+restart
+          path: drizzle.config.ts
     ports:
       - 3000:3000
     command: >
       bash -c "cp -rfu /cache/node_modules/. /app/node_modules/ &&
       cp /cache/bun.lockb /app/bun.lockb && 
       bun dev"
+volumes:
+  db_data:
+  db_replica1:

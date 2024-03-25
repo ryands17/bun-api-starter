@@ -7,6 +7,12 @@ services:
     environment:
       - SQLD_NODE=primary
       - SQLD_DB_PATH=/var/lib/sqld/primary.sqld
+      - SQLD_ENABLE_BOTTOMLESS_REPLICATION=true
+      - LIBSQL_BOTTOMLESS_BUCKET=bucket-name
+      - LIBSQL_BOTTOMLESS_AWS_ACCESS_KEY_ID=use-env-var-here
+      - LIBSQL_BOTTOMLESS_AWS_SECRET_ACCESS_KEY=use-env-var-here
+      - LIBSQL_BOTTOMLESS_AWS_DEFAULT_REGION=eu-west-1
+      - RUST_LOG=info,bottomless=trace
     volumes:
       - db_data:/var/lib/sqld
     ports:
